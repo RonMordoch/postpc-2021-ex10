@@ -21,6 +21,7 @@ class UserInfoGetterWorker(context: Context, workerParams: WorkerParameters) : W
             return Result.failure()
         }
         val result = response.body() ?: return Result.failure()
-        return Result.success(workDataOf(KEY_OUTPUT_USER_INFO to Gson().toJson(result)))
+
+        return Result.success(workDataOf(KEY_OUTPUT_USER_INFO to Gson().toJson(result.data)))
     }
 }

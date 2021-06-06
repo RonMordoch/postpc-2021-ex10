@@ -3,4 +3,6 @@
     <string name="edit_text_username_hint">Username</string>
     <string name="fab_get_token_content_description">button that get\'s the user token</string>
     <string name="image_view_user_profile_img_description">user profile image</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

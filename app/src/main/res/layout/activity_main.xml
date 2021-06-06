@@ -6,72 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.MainActivity">
 
-    <EditText
-        android:id="@+id/editTextUsername"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/navHostFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:hint="@string/edit_text_username_hint"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabGetToken"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:contentDescription="@string/fab_get_token_content_description"
-        app:layout_constraintEnd_toEndOf="@+id/editTextUsername"
-        app:layout_constraintTop_toBottomOf="@+id/editTextUsername"
-        app:srcCompat="@drawable/ic_baseline_done_24" />
-
-
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progressIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/fabGetToken"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:indeterminate="true" />
-
-
-    <ImageView
-        android:id="@+id/imageViewUserImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/progressIndicator"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:contentDescription="@string/image_view_user_profile_img_description" />
-
-    <TextView
-        android:id="@+id/textViewUsername"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewUserImage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:text="llalalalalalalalalalalaal"
-
-        />
-
-    <TextView
-        android:id="@+id/textViewPrettyName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/textViewUsername"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:text="llalalalalalalalalalalaal"
-        />
-
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/navigation_graph" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
