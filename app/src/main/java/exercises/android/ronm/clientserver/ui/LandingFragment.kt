@@ -2,9 +2,7 @@ package exercises.android.ronm.clientserver.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.EditText
 import androidx.core.widget.doOnTextChanged
 import androidx.navigation.NavController
@@ -18,7 +16,7 @@ import exercises.android.ronm.clientserver.workers.KEY_INPUT_USERNAME
 import exercises.android.ronm.clientserver.workers.KEY_OUTPUT_TOKEN
 import exercises.android.ronm.clientserver.workers.UserTokenGetterWorker
 
-class EditUsernameFragment : Fragment(R.layout.fragment_edit_username) {
+class LandingFragment : Fragment(R.layout.fragment_landing) {
 
     private lateinit var editTextUsername: EditText
     private lateinit var fabGetToken: FloatingActionButton
@@ -44,6 +42,7 @@ class EditUsernameFragment : Fragment(R.layout.fragment_edit_username) {
         progressUserToken = view.findViewById(R.id.progressUserToken)
         editTextUsername.visibility = View.VISIBLE
         fabGetToken.visibility = View.VISIBLE
+
         progressUserToken.visibility = View.INVISIBLE
 
         // disable button and set listener to editText for valid username

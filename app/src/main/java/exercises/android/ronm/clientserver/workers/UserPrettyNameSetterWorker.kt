@@ -7,23 +7,24 @@ import androidx.work.workDataOf
 import com.google.gson.Gson
 import exercises.android.ronm.clientserver.server.BASE_URL
 import exercises.android.ronm.clientserver.server.ServerHolder
+import exercises.android.ronm.clientserver.server.ServerInterface
 
-const val KEY_INPUT_TOKEN = "key_input_token"
-const val KEY_OUTPUT_USER_INFO = "key_output_user_info"
+const val KEY_INPUT_PRETTY_NAME = "key_input_pretty_name"
 
-class UserInfoGetterWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
+class UserPrettyNameSetterWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
 
     override fun doWork(): Result {
-        // if token is null from input data, we have an error, return failure
+        val prettyName = inputData.getString(KEY_INPUT_PRETTY_NAME) ?: return Result.failure()
         val token = inputData.getString(KEY_INPUT_TOKEN) ?: return Result.failure()
         val server = ServerHolder.serverInterface
-        val response = server.getUserInfo("token $token").execute()
+        val response = server.setUserPrettyName("token $token", ServerInterface.SetUserPrettyNameRequest(prettyName)).execute()
         if (!response.isSuccessful) {
             return Result.failure()
         }
         val result = response.body() ?: return Result.failure()
         result.data.image_url = BASE_URL + result.data.image_url // return the full image url
-
         return Result.success(workDataOf(KEY_OUTPUT_USER_INFO to Gson().toJson(result.data)))
+
     }
+
 }

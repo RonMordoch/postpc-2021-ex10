@@ -15,7 +15,6 @@ class ClientServerApp : Application() {
     override fun onCreate() {
         super.onCreate()
         val sp = getSharedPreferences(SP_NAME_TOKEN, MODE_PRIVATE)
-        sp.edit().clear().apply() // TODO delete, ONLY FOR DEBUG
         token = sp.getString(SP_KEY_TOKEN, "").toString()
     }
 

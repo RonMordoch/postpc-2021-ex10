@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/editUsernameFragment"
-        android:name="exercises.android.ronm.clientserver.ui.EditUsernameFragment"
+        android:name="exercises.android.ronm.clientserver.ui.LandingFragment"
         android:label="fragment_edit_username"
-        tools:layout="@layout/fragment_edit_username" >
+        tools:layout="@layout/fragment_landing" >
         <action
             android:id="@+id/action_editUsernameFragment_to_userInfoFragment"
             app:destination="@id/userInfoFragment"
