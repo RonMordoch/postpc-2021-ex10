@@ -2,6 +2,7 @@
 # Client-Server app
 
 "# postpc-2021-ex10" 
+
 I pledge the highest level of ethical principles in support of academic excellence.  
 I ensure that all of my work reflects my own abilities and not those of someone else.
 
@@ -24,6 +25,7 @@ When the user first launches the app, it loads a fragment which requests the use
 <img src="screenshots/step_1_b.png" width="50%" height="50%">
 
 Upon click on the button,the app shows a circular progress indicator until the token response from the server was received:
+
 <img src="screenshots/step_1_c.png" width="50%" height="50%">
 
 Once the token arrived, the app navigates forward to a fragment which displays the user's info.
