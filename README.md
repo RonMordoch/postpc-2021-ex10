@@ -20,25 +20,26 @@ b. Pro: Does not rely on local storage, more secure in case token changes.
 ## App flow
 Upon the first launch, the app loads a fragment which requests the user's username and enables the button when the input is correct:
 
-![step_1_a](screenshots/step_1_a.png){:height="50%" width="50%"}
+![step_1_a](screenshots/step_1_a.png)
+<img src="screenshots/step_1_a.png" width="100" height="100">
 
-![step_1_b](screenshots/step_1_b.png){:height="50%" width="50%"}
+![step_1_b](screenshots/step_1_b.png)
 
 Upon click, we show a circular progress indicator until we have received the token from the server:
 
-![step_1_c](screenshots/step_1_c.png){:height="50%" width="50%"}
+![step_1_c](screenshots/step_1_c.png)
 
 When we have our token, we navigate forward to a fragment which displays the user's info.
 If the app was already launched in the past, we have a saved token in SharedPreferences and we will navigate directly into this fragment upon
 launch.
 
-![step_2_a](screenshots/step_2_a.png){:height="50%" width="50%"}
+![step_2_a](screenshots/step_2_a.png)
 
 If user click on the edit button, we navigate to a fragment which enables him to edit his current "pretty_name" and image:
 
-![step_3_a](screenshots/step_3_a.png){:height="50%" width="50%"}
-![step_3_b](screenshots/step_3_b.png){:height="50%" width="50%"}
+![step_3_a](screenshots/step_3_a.png)
+![step_3_b](screenshots/step_3_b.png)
 
 Upon successful edit and POST to the server, we navigate back to the previous fragment, now showing the most updated information:
 
-![step_3_c](screenshots/step_3_c.png){:height="50%" width="50%"}
+![step_3_c](screenshots/step_3_c.png)
