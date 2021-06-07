@@ -102,17 +102,20 @@ class UserInfoFragment : Fragment(R.layout.fragment_user_info) {
 
 
     private fun showUserInfoViews() {
+        // load the user info into views
+        val displayName = if (userInfo.pretty_name == null || userInfo.pretty_name == "") userInfo.username else userInfo.pretty_name
+        textViewPrettyName.text = getString(R.string.user_welcome_msg,displayName)
+        if (userInfo.image_url != "") {
+            Glide.with(this).load(userInfo.image_url).into(imageViewUserImage)
+        }
+        // enable views visibility only after image loaded
         progressIndicator.visibility = View.INVISIBLE
         imageViewUserImage.visibility = View.VISIBLE
         textViewPrettyName.visibility = View.VISIBLE
         editTextPrettyName.visibility = View.INVISIBLE
         fabStartEdit.visibility = View.VISIBLE
         fabStartEdit.isEnabled = true
-        // load the user info into views
-        textViewPrettyName.text = getString(R.string.user_welcome_msg, userInfo.username)
-        if (userInfo.image_url != "") {
-            Glide.with(this).load(userInfo.image_url).into(imageViewUserImage)
-        }
+
     }
 
     private fun hideUserInfoViews() {

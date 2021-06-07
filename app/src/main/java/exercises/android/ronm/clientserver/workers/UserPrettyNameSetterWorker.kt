@@ -16,8 +16,9 @@ class UserPrettyNameSetterWorker(context: Context, workerParams: WorkerParameter
     override fun doWork(): Result {
         val prettyName = inputData.getString(KEY_INPUT_PRETTY_NAME) ?: return Result.failure()
         val token = inputData.getString(KEY_INPUT_TOKEN) ?: return Result.failure()
+        val request = ServerInterface.SetUserPrettyNameRequest(prettyName)
         val server = ServerHolder.serverInterface
-        val response = server.setUserPrettyName("token $token", ServerInterface.SetUserPrettyNameRequest(prettyName)).execute()
+        val response = server.setUserPrettyName("token $token", request).execute()
         if (!response.isSuccessful) {
             return Result.failure()
         }
