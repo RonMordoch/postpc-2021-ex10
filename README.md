@@ -20,7 +20,10 @@ b. Pro: Does not rely on local storage, more secure in case token changes.
 ## App flow
 Upon the first launch, the app loads a fragment which requests the user's username and enables the button when the input is correct:
 
-<img src="screenshots/step_1_a.png" width="50%" height="50%"> <img src="screenshots/step_1_b.png" width="50%" height="50%">
+<div> 
+<img src="screenshots/step_1_a.png" width="50%" height="50%"> 
+<img src="screenshots/step_1_b.png" width="50%" height="50%">
+</div>
 
 Upon click, we show a circular progress indicator until we have received the token from the server:
 <img src="screenshots/step_1_c.png" width="50%" height="50%">
