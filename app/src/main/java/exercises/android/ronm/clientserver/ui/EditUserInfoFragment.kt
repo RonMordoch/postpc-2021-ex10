@@ -19,7 +19,7 @@ import exercises.android.ronm.clientserver.server.ServerInterface
 import exercises.android.ronm.clientserver.workers.KEY_INPUT_PRETTY_NAME
 import exercises.android.ronm.clientserver.workers.KEY_INPUT_TOKEN
 import exercises.android.ronm.clientserver.workers.KEY_OUTPUT_USER_INFO
-import exercises.android.ronm.clientserver.workers.UserPrettyNameSetterWorker
+import exercises.android.ronm.clientserver.workers.PrettyNameSetterWorker
 
 class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
 
@@ -38,7 +38,6 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         // get application context
         appContext = activity?.applicationContext as ClientServerApp
         // find all views
@@ -51,21 +50,26 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         imageViewOctopus = view.findViewById(R.id.imageViewOctopus)
         imageViewFrog = view.findViewById(R.id.imageViewFrog)
         // load all images
-        val imageViewList = mutableListOf(imageViewCrab, imageViewUnicorn, imageViewAlien, imageViewRobot, imageViewOctopus, imageViewFrog)
-        imageViewList.zip(imageUrlList) { imageView, imgUrl ->
+        val imagesHashMap = hashMapOf(
+            imageViewCrab to crabImgUrl,
+            imageViewUnicorn to unicornImgUrl,
+            imageViewAlien to alienImgUrl,
+            imageViewRobot to robotImgUrl,
+            imageViewOctopus to octopusImgUrl,
+            imageViewFrog to frogImgUrl
+        )
+        imagesHashMap.forEach { (imageView, imgUrl) ->
+            // load image
             Glide.with(this).load(imgUrl).into(imageView)
-            // find the image-view with the user's current image
-            if (imgUrl == userInfoViewModel.userInfoLiveData.value?.image_url){
-                imageViewUserImage = imageView
-            }
-        }
-        imageViewList.forEach { imageView ->
+            // set on click listener for every image
             imageView.setOnClickListener {
                 imageViewUserImage.setBackgroundResource(0)
                 imageViewUserImage = imageView
                 imageViewUserImage.setBackgroundResource(R.drawable.image_border)
-
-
+            }
+            // find the image-view with the user's current image
+            if (imgUrl == userInfoViewModel.userInfoLiveData.value?.image_url) {
+                imageViewUserImage = imageView
             }
         }
         // mark the user's current image
@@ -75,12 +79,13 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         // init display name
         editTextPrettyName.setText(userInfoViewModel.displayName)
         fabFinishEdit.setOnClickListener {
-            startInfoSetterWorker()
+            startPrettyNameSetterWorker()
+            startUserImageSetterWorker()
         }
 
     }
 
-    private fun startInfoSetterWorker() {
+    private fun startPrettyNameSetterWorker() {
         if (appContext.token == "") {
             return // safety check for unexpected calls
         }
@@ -89,7 +94,31 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         val inputData = workDataOf(KEY_INPUT_TOKEN to appContext.token, KEY_INPUT_PRETTY_NAME to prettyName)
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         val workRequest =
-            OneTimeWorkRequestBuilder<UserPrettyNameSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
+            OneTimeWorkRequestBuilder<PrettyNameSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
+        workManager?.enqueue(workRequest)
+        // set live-data observer for result
+        workManager?.getWorkInfoByIdLiveData(workRequest.id)?.observe(viewLifecycleOwner, { workInfo ->
+            if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                val userInfoJson = workInfo.outputData.getString(KEY_OUTPUT_USER_INFO)
+                userInfoViewModel.setUserInfo(Gson().fromJson(userInfoJson, ServerInterface.User::class.java))
+                Toast.makeText(appContext, "Success!", Toast.LENGTH_SHORT).show()
+            } else if (workInfo.state == WorkInfo.State.FAILED) {
+                Toast.makeText(appContext, "Please try again!", Toast.LENGTH_SHORT).show()
+
+            }
+        })
+    }
+
+    private fun startUserImageSetterWorker() {
+        if (appContext.token == "") {
+            return // safety check for unexpected calls
+        }
+        val workManager = activity?.application?.let { WorkManager.getInstance(it) }
+        val prettyName = editTextPrettyName.text.toString()
+        val inputData = workDataOf(KEY_INPUT_TOKEN to appContext.token, KEY_INPUT_PRETTY_NAME to prettyName)
+        val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
+        val workRequest =
+            OneTimeWorkRequestBuilder<PrettyNameSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
         workManager?.enqueue(workRequest)
         // set live-data observer for result
         workManager?.getWorkInfoByIdLiveData(workRequest.id)?.observe(viewLifecycleOwner, { workInfo ->
@@ -112,8 +141,6 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         private const val robotImgUrl = "$BASE_URL/images/robot.png"
         private const val octopusImgUrl = "$BASE_URL/images/octopus.png"
         private const val frogImgUrl = "$BASE_URL/images/frog.png"
-        private val imageUrlList = mutableListOf(crabImgUrl, unicornImgUrl, alienImgUrl, robotImgUrl, octopusImgUrl, frogImgUrl)
-
     }
 
 

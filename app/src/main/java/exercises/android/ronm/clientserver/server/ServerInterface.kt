@@ -9,6 +9,7 @@ interface ServerInterface {
     data class User(var username: String?, var pretty_name: String?, var image_url: String?)
     data class UserResponse(var data: User)
     data class SetUserPrettyNameRequest(var pretty_name: String?)
+    data class SetUserImageRequest(var image_url: String?)
 
     @GET("/users/{username}/token/") //todo  https://hujipostpc2019.pythonanywhere.com/users/<username goes here>/token/
     fun getToken(@Path("username") username: String) : Call<TokenResponse>
@@ -20,4 +21,7 @@ interface ServerInterface {
     @Headers("Content-Type: application/json")
     fun setUserPrettyName(@Header("Authorization") token : String, @Body request : SetUserPrettyNameRequest) : Call<UserResponse>
 
+    @POST("/user/edit/")
+    @Headers("Content-Type: application/json")
+    fun setUserImage(@Header("Authorization") token : String, @Body request : SetUserImageRequest) : Call<UserResponse>
 }
