@@ -20,13 +20,10 @@ b. Pro: Does not rely on local storage, more secure in case token changes.
 ## App flow
 Upon the first launch, the app loads a fragment which requests the user's username and enables the button when the input is correct:
 
-<img src="screenshots/step_1_a.png" width="50%" height="50%">
-<img src="screenshots/step_1_b.png" width="50%" height="50%">
+<img src="screenshots/step_1_a.png" width="50%" height="50%"> <img src="screenshots/step_1_b.png" width="50%" height="50%">
 
 Upon click, we show a circular progress indicator until we have received the token from the server:
-
 <img src="screenshots/step_1_c.png" width="50%" height="50%">
-
 
 When we have our token, we navigate forward to a fragment which displays the user's info.
 If the app was already launched in the past, we have a saved token in SharedPreferences and we will navigate directly into this fragment upon
@@ -36,8 +33,7 @@ launch.
 
 If user click on the edit button, we navigate to a fragment which enables him to edit his current "pretty_name" and image:
 
-<img src="screenshots/step_3_a.png" width="50%" height="50%">
-<img src="screenshots/step_3_b.png" width="50%" height="50%">
+<img src="screenshots/step_3_a.png" width="50%" height="50%"> <img src="screenshots/step_3_b.png" width="50%" height="50%">
 
 Upon successful edit and POST to the server, we navigate back to the previous fragment, now showing the most updated information:
 
