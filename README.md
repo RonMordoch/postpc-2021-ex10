@@ -20,8 +20,7 @@ b. Pro: Does not rely on local storage, more secure in case token changes.
 ## App flow
 Upon the first launch, the app loads a fragment which requests the user's username and enables the button when the input is correct:
 
-![step_1_a](screenshots/step_1_a.png)
-<img src="screenshots/step_1_a.png" width="100" height="100">
+<img src="screenshots/step_1_a.png" width="50%" height="50%">
 
 ![step_1_b](screenshots/step_1_b.png)
 
