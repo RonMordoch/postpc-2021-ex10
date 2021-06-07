@@ -11,10 +11,10 @@ interface ServerInterface {
     data class SetUserPrettyNameRequest(var pretty_name: String?)
     data class SetUserImageRequest(var image_url: String?)
 
-    @GET("/users/{username}/token/") //todo  https://hujipostpc2019.pythonanywhere.com/users/<username goes here>/token/
+    @GET("/users/{username}/token/")
     fun getToken(@Path("username") username: String) : Call<TokenResponse>
 
-    @GET("/user/") // probably, todo https://hujipostpc2019.pythonanywhere.com/user/
+    @GET("/user/")
     fun getUserInfo(@Header("Authorization") token : String) : Call<UserResponse>
 
     @POST("/user/edit/")

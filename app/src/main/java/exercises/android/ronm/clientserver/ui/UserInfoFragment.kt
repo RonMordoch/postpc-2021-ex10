@@ -56,8 +56,8 @@ class UserInfoFragment : Fragment(R.layout.fragment_user_info) {
         userInfoViewModel.userInfoLiveData.observe(viewLifecycleOwner, { userInfo ->
             // load the user info into views
             textViewPrettyName.text = getString(R.string.user_welcome_msg, userInfoViewModel.displayName)
-            if (userInfo.image_url != "") {
-                Glide.with(this).load(userInfo.image_url).into(imageViewUserImage)
+            if (userInfoViewModel.fullImgUrl != "") {
+                Glide.with(this).load(userInfoViewModel.fullImgUrl).into(imageViewUserImage)
             }
         })
     }

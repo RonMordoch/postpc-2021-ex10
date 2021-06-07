@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.work.*
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -16,10 +17,7 @@ import exercises.android.ronm.clientserver.R
 import exercises.android.ronm.clientserver.UserInfoViewModel
 import exercises.android.ronm.clientserver.server.BASE_URL
 import exercises.android.ronm.clientserver.server.ServerInterface
-import exercises.android.ronm.clientserver.workers.KEY_INPUT_PRETTY_NAME
-import exercises.android.ronm.clientserver.workers.KEY_INPUT_TOKEN
-import exercises.android.ronm.clientserver.workers.KEY_OUTPUT_USER_INFO
-import exercises.android.ronm.clientserver.workers.PrettyNameSetterWorker
+import exercises.android.ronm.clientserver.workers.*
 
 class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
 
@@ -34,6 +32,7 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
     private lateinit var imageViewUserImage: ImageView
     private lateinit var appContext: ClientServerApp
     private val userInfoViewModel: UserInfoViewModel by activityViewModels()
+    private lateinit var imagesHashMap : HashMap<ImageView, String>
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,7 +49,7 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         imageViewOctopus = view.findViewById(R.id.imageViewOctopus)
         imageViewFrog = view.findViewById(R.id.imageViewFrog)
         // load all images
-        val imagesHashMap = hashMapOf(
+        imagesHashMap = hashMapOf(
             imageViewCrab to crabImgUrl,
             imageViewUnicorn to unicornImgUrl,
             imageViewAlien to alienImgUrl,
@@ -60,10 +59,10 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         )
         imagesHashMap.forEach { (imageView, imgUrl) ->
             // load image
-            Glide.with(this).load(imgUrl).into(imageView)
+            Glide.with(this).load(BASE_URL + imgUrl).into(imageView)
             // set on click listener for every image
             imageView.setOnClickListener {
-                imageViewUserImage.setBackgroundResource(0)
+                imageViewUserImage.setBackgroundResource(EMPTY_BACKGROUND)
                 imageViewUserImage = imageView
                 imageViewUserImage.setBackgroundResource(R.drawable.image_border)
             }
@@ -79,10 +78,11 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         // init display name
         editTextPrettyName.setText(userInfoViewModel.displayName)
         fabFinishEdit.setOnClickListener {
+            fabFinishEdit.isEnabled = false
             startPrettyNameSetterWorker()
             startUserImageSetterWorker()
+            findNavController().navigate(R.id.action_editUserInfoFragment_to_userInfoFragment)
         }
-
     }
 
     private fun startPrettyNameSetterWorker() {
@@ -114,11 +114,11 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
             return // safety check for unexpected calls
         }
         val workManager = activity?.application?.let { WorkManager.getInstance(it) }
-        val prettyName = editTextPrettyName.text.toString()
-        val inputData = workDataOf(KEY_INPUT_TOKEN to appContext.token, KEY_INPUT_PRETTY_NAME to prettyName)
+        val newImgUrl = imagesHashMap[imageViewUserImage]
+        val inputData = workDataOf(KEY_INPUT_TOKEN to appContext.token, KEY_INPUT_USER_IMG to newImgUrl)
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         val workRequest =
-            OneTimeWorkRequestBuilder<PrettyNameSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
+            OneTimeWorkRequestBuilder<UserImageSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
         workManager?.enqueue(workRequest)
         // set live-data observer for result
         workManager?.getWorkInfoByIdLiveData(workRequest.id)?.observe(viewLifecycleOwner, { workInfo ->
@@ -128,19 +128,19 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
                 Toast.makeText(appContext, "Success!", Toast.LENGTH_SHORT).show()
             } else if (workInfo.state == WorkInfo.State.FAILED) {
                 Toast.makeText(appContext, "Please try again!", Toast.LENGTH_SHORT).show()
-
             }
         })
     }
 
 
     companion object {
-        private const val crabImgUrl = "$BASE_URL/images/crab.png"
-        private const val unicornImgUrl = "$BASE_URL/images/unicorn.png"
-        private const val alienImgUrl = "$BASE_URL/images/alien.png"
-        private const val robotImgUrl = "$BASE_URL/images/robot.png"
-        private const val octopusImgUrl = "$BASE_URL/images/octopus.png"
-        private const val frogImgUrl = "$BASE_URL/images/frog.png"
+        private const val crabImgUrl = "/images/crab.png"
+        private const val unicornImgUrl = "/images/unicorn.png"
+        private const val alienImgUrl = "/images/alien.png"
+        private const val robotImgUrl = "/images/robot.png"
+        private const val octopusImgUrl = "/images/octopus.png"
+        private const val frogImgUrl = "/images/frog.png"
+        private const val EMPTY_BACKGROUND = 0
     }
 
 
