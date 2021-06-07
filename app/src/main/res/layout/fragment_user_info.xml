@@ -17,63 +17,44 @@
         android:layout_marginTop="32dp"
         android:indeterminate="true" />
 
-    <EditText
-        android:id="@+id/editTextPrettyName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/progressUserInfo"
-        app:layout_constraintBottom_toTopOf="@+id/fabStartEditPrettyName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="24dp"
-        android:textSize="24sp"
-        />
 
     <TextView
         android:id="@+id/textViewPrettyName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/fabStartEditPrettyName"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@+id/imageViewUserImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/progressUserInfo"
         />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabStartEditPrettyName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/editTextPrettyName"
-        app:layout_constraintEnd_toEndOf="@id/editTextPrettyName"
-        android:layout_marginTop="16dp"
-        app:srcCompat="@drawable/ic_baseline_edit_24"
-        />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabFinishEditPrettyName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/editTextPrettyName"
-        app:layout_constraintEnd_toEndOf="@id/editTextPrettyName"
-        android:layout_marginTop="16dp"
-        app:srcCompat="@drawable/ic_baseline_done_24"
-        />
-
-
     <ImageView
         android:id="@+id/imageViewUserImage"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        app:layout_constraintTop_toBottomOf="@id/fabStartEditPrettyName"
+        app:layout_constraintTop_toBottomOf="@id/textViewPrettyName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp"
         android:contentDescription="@string/image_view_user_profile_img_description" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabEditUserInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        app:srcCompat="@drawable/ic_baseline_edit_24"
+        />
+
 
 
 

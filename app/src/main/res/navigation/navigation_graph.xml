@@ -3,22 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/editUsernameFragment">
+    app:startDestination="@id/landingFragment">
 
     <fragment
-        android:id="@+id/editUsernameFragment"
+        android:id="@+id/landingFragment"
         android:name="exercises.android.ronm.clientserver.ui.LandingFragment"
         android:label="fragment_edit_username"
         tools:layout="@layout/fragment_landing" >
         <action
-            android:id="@+id/action_editUsernameFragment_to_userInfoFragment"
+            android:id="@+id/action_landingFragment_to_userInfoFragment"
             app:destination="@id/userInfoFragment"
-            app:popUpTo="@id/editUsernameFragment"
+            app:popUpTo="@id/landingFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/userInfoFragment"
         android:name="exercises.android.ronm.clientserver.ui.UserInfoFragment"
         android:label="fragment_user_info"
-        tools:layout="@layout/fragment_user_info" />
+        tools:layout="@layout/fragment_user_info" >
+        <action
+            android:id="@+id/action_userInfoFragment_to_editUserInfoFragment"
+            app:destination="@id/editUserInfoFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/fade_out" />
+    </fragment>
+    <fragment
+        android:id="@+id/editUserInfoFragment"
+        android:name="exercises.android.ronm.clientserver.ui.EditUserInfoFragment"
+        android:label="fragment_edit_user_info"
+        tools:layout="@layout/fragment_edit_user_info" />
 </navigation>
