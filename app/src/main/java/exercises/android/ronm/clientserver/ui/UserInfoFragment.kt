@@ -6,8 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.work.*
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -15,7 +14,7 @@ import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.gson.Gson
 import exercises.android.ronm.clientserver.ClientServerApp
 import exercises.android.ronm.clientserver.R
-import exercises.android.ronm.clientserver.UserInfoViewModel
+import exercises.android.ronm.clientserver.viewmodels.UserInfoViewModel
 import exercises.android.ronm.clientserver.server.ServerInterface
 import exercises.android.ronm.clientserver.workers.*
 
@@ -27,7 +26,6 @@ class UserInfoFragment : Fragment(R.layout.fragment_user_info) {
     private lateinit var textViewPrettyName : TextView
     private lateinit var fabEditUserInfo : FloatingActionButton
     private lateinit var appContext: ClientServerApp
-    private lateinit var navController: NavController
     private val userInfoViewModel : UserInfoViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,8 +33,6 @@ class UserInfoFragment : Fragment(R.layout.fragment_user_info) {
 
         // get application context
         appContext = activity?.applicationContext as ClientServerApp
-        // init nav controller
-        navController = (activity?.supportFragmentManager?.findFragmentById(R.id.navHostFragment) as NavHostFragment).navController
         // find all views
         progressIndicator = view.findViewById(R.id.progressUserInfo)
         imageViewUserImage = view.findViewById(R.id.imageViewUserImage)
@@ -50,7 +46,7 @@ class UserInfoFragment : Fragment(R.layout.fragment_user_info) {
         // set on-click listener for fab to enable pretty-name editing
         fabEditUserInfo.setOnClickListener {
             fabEditUserInfo.hide()
-            navController.navigate(R.id.action_userInfoFragment_to_editUserInfoFragment)
+            findNavController().navigate(R.id.action_userInfoFragment_to_editUserInfoFragment)
         }
         // set an observer for user info live data for UI updates
         userInfoViewModel.userInfoLiveData.observe(viewLifecycleOwner, { userInfo ->
@@ -81,7 +77,6 @@ class UserInfoFragment : Fragment(R.layout.fragment_user_info) {
             }
         })
     }
-
 
     private fun showUserInfoViews() {
         progressIndicator.visibility = View.INVISIBLE

@@ -1,4 +1,4 @@
-package exercises.android.ronm.clientserver
+package exercises.android.ronm.clientserver.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

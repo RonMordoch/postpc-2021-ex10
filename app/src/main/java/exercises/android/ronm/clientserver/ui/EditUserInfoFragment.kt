@@ -14,7 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import exercises.android.ronm.clientserver.ClientServerApp
 import exercises.android.ronm.clientserver.R
-import exercises.android.ronm.clientserver.UserInfoViewModel
+import exercises.android.ronm.clientserver.viewmodels.UserInfoViewModel
 import exercises.android.ronm.clientserver.server.BASE_URL
 import exercises.android.ronm.clientserver.server.ServerInterface
 import exercises.android.ronm.clientserver.workers.*
@@ -31,8 +31,8 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
     private lateinit var imageViewFrog: ImageView
     private lateinit var imageViewUserImage: ImageView
     private lateinit var appContext: ClientServerApp
+    private lateinit var imagesHashMap: HashMap<ImageView, String>
     private val userInfoViewModel: UserInfoViewModel by activityViewModels()
-    private lateinit var imagesHashMap : HashMap<ImageView, String>
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,6 +49,17 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         imageViewOctopus = view.findViewById(R.id.imageViewOctopus)
         imageViewFrog = view.findViewById(R.id.imageViewFrog)
         // load all images
+        initImageViews()
+        // expand fab upon entering fragment
+        fabFinishEdit.show()
+        // init display name
+        editTextPrettyName.setText(userInfoViewModel.displayName)
+        fabFinishEdit.setOnClickListener {
+            fabFinishEditOnClick()
+        }
+    }
+
+    private fun initImageViews() {
         imagesHashMap = hashMapOf(
             imageViewCrab to crabImgUrl,
             imageViewUnicorn to unicornImgUrl,
@@ -73,16 +84,12 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         }
         // mark the user's current image
         imageViewUserImage.setBackgroundResource(R.drawable.image_border)
-        // expand fab upon entering fragment
-        fabFinishEdit.show()
-        // init display name
-        editTextPrettyName.setText(userInfoViewModel.displayName)
-        fabFinishEdit.setOnClickListener {
-            fabFinishEdit.isEnabled = false
-            startPrettyNameSetterWorker()
-            startUserImageSetterWorker()
-            findNavController().navigate(R.id.action_editUserInfoFragment_to_userInfoFragment)
-        }
+    }
+
+    private fun fabFinishEditOnClick() {
+        fabFinishEdit.isEnabled = false
+        startPrettyNameSetterWorker()
+        startUserImageSetterWorker()
     }
 
     private fun startPrettyNameSetterWorker() {
@@ -101,10 +108,10 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
             if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                 val userInfoJson = workInfo.outputData.getString(KEY_OUTPUT_USER_INFO)
                 userInfoViewModel.setUserInfo(Gson().fromJson(userInfoJson, ServerInterface.User::class.java))
-                Toast.makeText(appContext, "Success!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(appContext, TOAST_SUCCESS, Toast.LENGTH_SHORT).show()
             } else if (workInfo.state == WorkInfo.State.FAILED) {
-                Toast.makeText(appContext, "Please try again!", Toast.LENGTH_SHORT).show()
-
+                fabFinishEdit.isEnabled = true // re-enable button
+                Toast.makeText(appContext, TOAST_FAIL, Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -125,9 +132,11 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
             if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                 val userInfoJson = workInfo.outputData.getString(KEY_OUTPUT_USER_INFO)
                 userInfoViewModel.setUserInfo(Gson().fromJson(userInfoJson, ServerInterface.User::class.java))
-                Toast.makeText(appContext, "Success!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(appContext, TOAST_SUCCESS, Toast.LENGTH_SHORT).show()
+                findNavController().navigate(R.id.action_editUserInfoFragment_to_userInfoFragment) // navigate forward upon success
             } else if (workInfo.state == WorkInfo.State.FAILED) {
-                Toast.makeText(appContext, "Please try again!", Toast.LENGTH_SHORT).show()
+                fabFinishEdit.isEnabled = true // re-enable button
+                Toast.makeText(appContext, TOAST_FAIL, Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -141,6 +150,8 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         private const val octopusImgUrl = "/images/octopus.png"
         private const val frogImgUrl = "/images/frog.png"
         private const val EMPTY_BACKGROUND = 0
+        private const val TOAST_SUCCESS = "Success!"
+        private const val TOAST_FAIL = "Please try again!"
     }
 
 
