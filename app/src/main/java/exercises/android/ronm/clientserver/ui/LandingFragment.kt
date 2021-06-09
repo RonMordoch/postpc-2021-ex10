@@ -54,18 +54,17 @@ class LandingFragment : Fragment(R.layout.fragment_landing) {
     }
 
     private fun startTokenGetterWorker() {
-        val workManager = activity?.application?.let { WorkManager.getInstance(it) }
+        val workManager = WorkManager.getInstance(appContext)
         val username = editTextUsername.text.toString()
         val inputData = workDataOf(KEY_INPUT_USERNAME to username)
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         val workRequest = OneTimeWorkRequestBuilder<UserTokenGetterWorker>().setInputData(inputData).setConstraints(constraints).build()
-        workManager?.enqueue(workRequest)
+        workManager.enqueue(workRequest)
         // set live-data observer for result
-        workManager?.getWorkInfoByIdLiveData(workRequest.id)?.observe(viewLifecycleOwner, { workInfo ->
+        workManager.getWorkInfoByIdLiveData(workRequest.id).observe(viewLifecycleOwner, { workInfo ->
             if (workInfo.state == WorkInfo.State.SUCCEEDED) { // save token and navigate forward
                 appContext.token = workInfo.outputData.getString(KEY_OUTPUT_TOKEN).toString()
                 findNavController().navigate(R.id.action_landingFragment_to_userInfoFragment)
-
             }
         })
     }

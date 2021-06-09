@@ -63,13 +63,13 @@ class UserInfoFragment : Fragment(R.layout.fragment_user_info) {
         if (appContext.token == "") {
             return // safety check for unexpected calls
         }
-        val workManager = activity?.application?.let { WorkManager.getInstance(it) }
+        val workManager = WorkManager.getInstance(appContext)
         val inputData = workDataOf(KEY_INPUT_TOKEN to appContext.token)
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
         val workRequest = OneTimeWorkRequestBuilder<UserInfoGetterWorker>().setInputData(inputData).setConstraints(constraints).build()
-        workManager?.enqueue(workRequest)
+        workManager.enqueue(workRequest)
         // set live-data observer for result
-        workManager?.getWorkInfoByIdLiveData(workRequest.id)?.observe(viewLifecycleOwner, { workInfo ->
+        workManager.getWorkInfoByIdLiveData(workRequest.id).observe(viewLifecycleOwner, { workInfo ->
             if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                 val userInfoJson = workInfo.outputData.getString(KEY_OUTPUT_USER_INFO)
                 userInfoViewModel.setUserInfo(Gson().fromJson(userInfoJson, ServerInterface.User::class.java))

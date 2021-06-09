@@ -96,15 +96,14 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         if (appContext.token == "") {
             return // safety check for unexpected calls
         }
-        val workManager = activity?.application?.let { WorkManager.getInstance(it) }
+        val workManager = WorkManager.getInstance(appContext)
         val prettyName = editTextPrettyName.text.toString()
         val inputData = workDataOf(KEY_INPUT_TOKEN to appContext.token, KEY_INPUT_PRETTY_NAME to prettyName)
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-        val workRequest =
-            OneTimeWorkRequestBuilder<PrettyNameSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
-        workManager?.enqueue(workRequest)
+        val workRequest = OneTimeWorkRequestBuilder<PrettyNameSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
+        workManager.enqueue(workRequest)
         // set live-data observer for result
-        workManager?.getWorkInfoByIdLiveData(workRequest.id)?.observe(viewLifecycleOwner, { workInfo ->
+        workManager.getWorkInfoByIdLiveData(workRequest.id).observe(viewLifecycleOwner, { workInfo ->
             if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                 val userInfoJson = workInfo.outputData.getString(KEY_OUTPUT_USER_INFO)
                 userInfoViewModel.setUserInfo(Gson().fromJson(userInfoJson, ServerInterface.User::class.java))
@@ -120,15 +119,14 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         if (appContext.token == "") {
             return // safety check for unexpected calls
         }
-        val workManager = activity?.application?.let { WorkManager.getInstance(it) }
+        val workManager = WorkManager.getInstance(appContext)
         val newImgUrl = imagesHashMap[imageViewUserImage]
         val inputData = workDataOf(KEY_INPUT_TOKEN to appContext.token, KEY_INPUT_USER_IMG to newImgUrl)
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-        val workRequest =
-            OneTimeWorkRequestBuilder<UserImageSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
-        workManager?.enqueue(workRequest)
+        val workRequest = OneTimeWorkRequestBuilder<UserImageSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
+        workManager.enqueue(workRequest)
         // set live-data observer for result
-        workManager?.getWorkInfoByIdLiveData(workRequest.id)?.observe(viewLifecycleOwner, { workInfo ->
+        workManager.getWorkInfoByIdLiveData(workRequest.id).observe(viewLifecycleOwner, { workInfo ->
             if (workInfo.state == WorkInfo.State.SUCCEEDED) {
                 val userInfoJson = workInfo.outputData.getString(KEY_OUTPUT_USER_INFO)
                 userInfoViewModel.setUserInfo(Gson().fromJson(userInfoJson, ServerInterface.User::class.java))
