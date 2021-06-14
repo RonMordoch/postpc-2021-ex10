@@ -49,11 +49,13 @@ class UserInfoFragment : Fragment(R.layout.fragment_user_info) {
             findNavController().navigate(R.id.action_userInfoFragment_to_editUserInfoFragment)
         }
         // set an observer for user info live data for UI updates
-        userInfoViewModel.userInfoLiveData.observe(viewLifecycleOwner, { userInfo ->
+        userInfoViewModel.displayNameLiveData.observe(viewLifecycleOwner, { displayName ->
             // load the user info into views
-            textViewPrettyName.text = getString(R.string.user_welcome_msg, userInfoViewModel.displayName)
-            if (userInfoViewModel.fullImgUrl != "") {
-                Glide.with(this).load(userInfoViewModel.fullImgUrl).into(imageViewUserImage)
+            textViewPrettyName.text = getString(R.string.user_welcome_msg, displayName)
+        })
+        userInfoViewModel.imgUrlLiveData.observe(viewLifecycleOwner, {imgUrl ->
+            if (imgUrl != "") {
+                Glide.with(this).load(imgUrl).into(imageViewUserImage)
             }
         })
     }

@@ -53,7 +53,7 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         // expand fab upon entering fragment
         fabFinishEdit.show()
         // init display name
-        editTextPrettyName.setText(userInfoViewModel.displayName)
+        editTextPrettyName.setText(userInfoViewModel.displayNameLiveData.value)
         fabFinishEdit.setOnClickListener {
             fabFinishEditOnClick()
         }
@@ -70,7 +70,7 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         )
         imagesHashMap.forEach { (imageView, imgUrl) ->
             // load image
-            Glide.with(this).load(BASE_URL + imgUrl).into(imageView)
+            Glide.with(this).load(imgUrl).into(imageView)
             // set on click listener for every image
             imageView.setOnClickListener {
                 imageViewUserImage.setBackgroundResource(EMPTY_BACKGROUND)
@@ -78,7 +78,7 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
                 imageViewUserImage.setBackgroundResource(R.drawable.image_border)
             }
             // find the image-view with the user's current image
-            if (imgUrl == userInfoViewModel.userInfoLiveData.value?.image_url) {
+            if (imgUrl == userInfoViewModel.imgUrlLiveData.value) {
                 imageViewUserImage = imageView
             }
         }
@@ -141,12 +141,12 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
 
 
     companion object {
-        private const val crabImgUrl = "/images/crab.png"
-        private const val unicornImgUrl = "/images/unicorn.png"
-        private const val alienImgUrl = "/images/alien.png"
-        private const val robotImgUrl = "/images/robot.png"
-        private const val octopusImgUrl = "/images/octopus.png"
-        private const val frogImgUrl = "/images/frog.png"
+        private const val crabImgUrl = "$BASE_URL/images/crab.png"
+        private const val unicornImgUrl = "$BASE_URL/images/unicorn.png"
+        private const val alienImgUrl = "$BASE_URL/images/alien.png"
+        private const val robotImgUrl = "$BASE_URL/images/robot.png"
+        private const val octopusImgUrl = "$BASE_URL/images/octopus.png"
+        private const val frogImgUrl = "$BASE_URL/images/frog.png"
         private const val EMPTY_BACKGROUND = 0
         private const val TOAST_SUCCESS = "Success!"
         private const val TOAST_FAIL = "Please try again!"
