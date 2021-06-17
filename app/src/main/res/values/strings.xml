@@ -4,5 +4,13 @@
     <string name="fab_get_token_content_description">button that get\'s the user token</string>
     <string name="image_view_user_profile_img_description">user profile image</string>
     <string name="user_welcome_msg">Welcome, %1$s.</string>
+    <string name="crab_image">Crab image</string>
+    <string name="unicorn_image">Unicorn image</string>
+    <string name="alien_image">Alien image</string>
+    <string name="robot_image">Robot image</string>
+    <string name="octopus_image">Octopus image</string>
+    <string name="frog_image">Frog image</string>
+    <string name="fab_finish_edit_desc">Button: finish editing user info</string>
+    <string name="fab_edit_user_info_desc">Button: start editing user info</string>
 
 </resources>

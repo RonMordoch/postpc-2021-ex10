@@ -17,11 +17,16 @@ class UserInfoGetterWorker(context: Context, workerParams: WorkerParameters) : W
         // if token is null from input data, we have an error, return failure
         val token = inputData.getString(KEY_INPUT_TOKEN) ?: return Result.failure()
         val server = ServerHolder.serverInterface
-        val response = server.getUserInfo("token $token").execute()
-        if (!response.isSuccessful) {
-            return Result.failure()
+        try {
+            val response = server.getUserInfo("token $token").execute()
+            if (!response.isSuccessful) {
+                return Result.failure()
+            }
+            val result = response.body() ?: return Result.failure()
+            result.data.image_url = BASE_URL + result.data.image_url // always return user data with full img url
+            return Result.success(workDataOf(KEY_OUTPUT_USER_INFO to Gson().toJson(result.data)))
+        } catch (exception: Exception) {
+            return Result.retry() // retry work if any error happened when communicating with server
         }
-        val result = response.body() ?: return Result.failure()
-        return Result.success(workDataOf(KEY_OUTPUT_USER_INFO to Gson().toJson(result.data)))
     }
 }

@@ -14,13 +14,16 @@ class UserTokenGetterWorker(context: Context, workerParams: WorkerParameters) : 
     override fun doWork(): Result {
         // if username is null from input data, we have an error, return failure
         val username = inputData.getString(KEY_INPUT_USERNAME) ?: return Result.failure()
-        // else grab response from server
         val server = ServerHolder.serverInterface
-        val response = server.getToken(username).execute()
-        if (!response.isSuccessful) {
-            return Result.failure()
+        try {
+            val response = server.getToken(username).execute()
+            if (!response.isSuccessful) {
+                return Result.failure()
+            }
+            val result = response.body() ?: return Result.failure()
+            return Result.success(workDataOf(KEY_OUTPUT_TOKEN to result.data))
+        } catch (exception: Exception) {
+            return Result.retry() // retry work if any error happened when communicating with server
         }
-        val result = response.body() ?: return Result.failure()
-        return Result.success(workDataOf(KEY_OUTPUT_TOKEN  to result.data))
     }
 }

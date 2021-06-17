@@ -8,16 +8,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.work.*
 import com.bumptech.glide.Glide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.gson.Gson
-import exercises.android.ronm.clientserver.ClientServerApp
 import exercises.android.ronm.clientserver.R
 import exercises.android.ronm.clientserver.viewmodels.UserInfoViewModel
 import exercises.android.ronm.clientserver.server.BASE_URL
-import exercises.android.ronm.clientserver.server.ServerInterface
-import exercises.android.ronm.clientserver.workers.*
 
 class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
 
@@ -30,7 +25,6 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
     private lateinit var imageViewOctopus: ImageView
     private lateinit var imageViewFrog: ImageView
     private lateinit var imageViewUserImage: ImageView
-    private lateinit var appContext: ClientServerApp
     private lateinit var imagesHashMap: HashMap<ImageView, String>
     private val userInfoViewModel: UserInfoViewModel by activityViewModels()
 
@@ -38,7 +32,7 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // get application context
-        appContext = activity?.applicationContext as ClientServerApp
+        val appContext = activity?.applicationContext
         // find all views
         editTextPrettyName = view.findViewById(R.id.editTextPrettyName)
         fabFinishEdit = view.findViewById(R.id.fabFinishEdit)
@@ -53,10 +47,26 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
         // expand fab upon entering fragment
         fabFinishEdit.show()
         // init display name
-        editTextPrettyName.setText(userInfoViewModel.displayNameLiveData.value)
+        editTextPrettyName.setText(userInfoViewModel.userLiveData.value?.getDisplayName())
         fabFinishEdit.setOnClickListener {
             fabFinishEditOnClick()
         }
+
+        userInfoViewModel.isEditSuccessful.observe(viewLifecycleOwner, { isEditSuccessful ->
+            when (isEditSuccessful) {
+                true -> {
+                    Toast.makeText(appContext, TOAST_SUCCESS, Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_editUserInfoFragment_to_userInfoFragment) // navigate forward upon success
+                }
+                false -> {
+                    fabFinishEdit.isEnabled = true // re-enable button
+                    Toast.makeText(appContext, TOAST_FAIL, Toast.LENGTH_SHORT).show()
+                }
+                else -> {
+                    // null value, do nothing
+                }
+            }
+        })
     }
 
     private fun initImageViews() {
@@ -78,7 +88,7 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
                 imageViewUserImage.setBackgroundResource(R.drawable.image_border)
             }
             // find the image-view with the user's current image
-            if (imgUrl == userInfoViewModel.imgUrlLiveData.value) {
+            if (imgUrl == userInfoViewModel.userLiveData.value?.image_url) {
                 imageViewUserImage = imageView
             }
         }
@@ -88,57 +98,13 @@ class EditUserInfoFragment : Fragment(R.layout.fragment_edit_user_info) {
 
     private fun fabFinishEditOnClick() {
         fabFinishEdit.isEnabled = false
-        startPrettyNameSetterWorker()
-        startUserImageSetterWorker()
-    }
-
-    private fun startPrettyNameSetterWorker() {
-        if (appContext.token == "") {
-            return // safety check for unexpected calls
-        }
-        val workManager = WorkManager.getInstance(appContext)
         val prettyName = editTextPrettyName.text.toString()
-        val inputData = workDataOf(KEY_INPUT_TOKEN to appContext.token, KEY_INPUT_PRETTY_NAME to prettyName)
-        val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-        val workRequest = OneTimeWorkRequestBuilder<PrettyNameSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
-        workManager.enqueue(workRequest)
-        // set live-data observer for result
-        workManager.getWorkInfoByIdLiveData(workRequest.id).observe(viewLifecycleOwner, { workInfo ->
-            if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                val userInfoJson = workInfo.outputData.getString(KEY_OUTPUT_USER_INFO)
-                userInfoViewModel.setUserInfo(Gson().fromJson(userInfoJson, ServerInterface.User::class.java))
-                Toast.makeText(appContext, TOAST_SUCCESS, Toast.LENGTH_SHORT).show()
-            } else if (workInfo.state == WorkInfo.State.FAILED) {
-                fabFinishEdit.isEnabled = true // re-enable button
-                Toast.makeText(appContext, TOAST_FAIL, Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-    private fun startUserImageSetterWorker() {
-        if (appContext.token == "") {
-            return // safety check for unexpected calls
+        val imgUrl = imagesHashMap[imageViewUserImage]
+        if (imgUrl != null) {
+            userInfoViewModel.startUserInfoSetterWorkers(prettyName, imgUrl)
         }
-        val workManager = WorkManager.getInstance(appContext)
-        val newImgUrl = imagesHashMap[imageViewUserImage]
-        val inputData = workDataOf(KEY_INPUT_TOKEN to appContext.token, KEY_INPUT_USER_IMG to newImgUrl)
-        val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-        val workRequest = OneTimeWorkRequestBuilder<UserImageSetterWorker>().setInputData(inputData).setConstraints(constraints).build()
-        workManager.enqueue(workRequest)
-        // set live-data observer for result
-        workManager.getWorkInfoByIdLiveData(workRequest.id).observe(viewLifecycleOwner, { workInfo ->
-            if (workInfo.state == WorkInfo.State.SUCCEEDED) {
-                val userInfoJson = workInfo.outputData.getString(KEY_OUTPUT_USER_INFO)
-                userInfoViewModel.setUserInfo(Gson().fromJson(userInfoJson, ServerInterface.User::class.java))
-                Toast.makeText(appContext, TOAST_SUCCESS, Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_editUserInfoFragment_to_userInfoFragment) // navigate forward upon success
-            } else if (workInfo.state == WorkInfo.State.FAILED) {
-                fabFinishEdit.isEnabled = true // re-enable button
-                Toast.makeText(appContext, TOAST_FAIL, Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
 
+    }
 
     companion object {
         private const val crabImgUrl = "$BASE_URL/images/crab.png"

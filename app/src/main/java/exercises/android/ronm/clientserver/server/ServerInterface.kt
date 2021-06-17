@@ -1,12 +1,12 @@
 package exercises.android.ronm.clientserver.server
 
+import exercises.android.ronm.clientserver.models.User
 import retrofit2.Call
 import retrofit2.http.*
 
 interface ServerInterface {
 
     data class TokenResponse(var data: String)
-    data class User(var username: String?, var pretty_name: String?, var image_url: String?)
     data class UserResponse(var data: User)
     data class SetUserPrettyNameRequest(var pretty_name: String?)
     data class SetUserImageRequest(var image_url: String?)
