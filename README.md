@@ -1,10 +1,21 @@
 
-# Client-Server app
+# postpc-2021-ex10:  Client-Server app
 
-"# postpc-2021-ex10" 
+An android app for communicating with server, downloading data, displaying it to the user and letting the user change their data in the server.
 
-I pledge the highest level of ethical principles in support of academic excellence.  
-I ensure that all of my work reflects my own abilities and not those of someone else.
+## Project Structure
+
+This project consists of 5 packages:
+* models: Contains a simple User data class.
+* server: Contains the retrofit's interface ServerInterface and ServerHolder, a singleton that holds the server's instantiation.
+
+
+
+
+A simple flow can be seen here:
+
+<img src="app_flow.png" width="100%" height="100%">
+
 
 ## Question
 As a client, at the first time you got a token. You have 2 options:
@@ -41,3 +52,8 @@ If the user clicks on the edit button, the app navigates to a fragment which ena
 Upon successful edit and POST to the server, the app navigates back to the previous fragment, which is now showing the most updated information:
 
 <img src="screenshots/step_3_c.png" width="50%" height="50%">
+
+
+## Academic Integrity
+I pledge the highest level of ethical principles in support of academic excellence.  
+I ensure that all of my work reflects my own abilities and not those of someone else.
