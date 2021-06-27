@@ -7,14 +7,18 @@ An android app for communicating with server, downloading data, displaying it to
 
 This project consists of 5 packages:
 * models: Contains a simple User data class.
+
 * server: Contains the retrofit's interface ServerInterface and ServerHolder, a singleton that holds the server's instantiation.
+
 * ui: Contains MainActivity and the 3 fragments:
- ** LandingFragment which lets the user input their name
- ** UserInfoFragment which shows the user their info and contains a button to edit the info.
- ** EditUserInfoFragment which is reached by clicking the button in the previous fragment, lets the user change their 'pretty_name' (display name),
- and their image. 
+    - LandingFragment which lets the user input their name.
+    - UserInfoFragment which shows the user their info and contains a button to edit the info.
+    - EditUserInfoFragment which is reached by clicking the button in the previous fragment, lets the user change their 'pretty_name' (display name),
+      and their image. 
+ 
 * viewmodels: Contains the UserInfoViewModel which extends AndroidViewModel and stores all the user information and is responsible for starting
 and handling the workers that get/set the user's info.
+
 * workers: 4 workers extending WorkManager's worker for getting the user's token and info and updating his display name and image.
 
 When the user first launches the app, it loads a fragment which requests the user's username and enables the button when the input is correct.
